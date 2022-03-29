@@ -16,8 +16,10 @@ import java.util.Objects;
 
 import icu.mmmc.xchat.ChatRoomActivity;
 import icu.mmmc.xchat.R;
+import icu.xchat.core.UserInfoManager;
 import icu.xchat.core.XChatCore;
 import icu.xchat.core.callbacks.adapters.ProgressAdapter;
+import icu.xchat.core.constants.UserAttributes;
 import icu.xchat.core.entities.ChatRoom;
 import icu.xchat.core.entities.MessageInfo;
 
@@ -86,6 +88,7 @@ public class MessageItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        // TODO: 2022/3/29 待优化性能
         RelativeLayout layout;
         if (Objects.equals(i, 0)) {
             return topSyncMsgView;
@@ -106,7 +109,7 @@ public class MessageItemAdapter extends BaseAdapter {
         itemTag.content = layout.findViewById(R.id.content);
         layout.setTag(itemTag);
         itemTag.content.setText(messageInfo.getContent());
-        itemTag.nickname.setText(String.valueOf(itemTag.isMe));
+        itemTag.nickname.setText(UserInfoManager.getUserInfo(messageInfo.getSender()).getAttribute(UserAttributes.$NICK));
         return layout;
     }
 
