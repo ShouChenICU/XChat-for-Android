@@ -1,7 +1,7 @@
 package icu.mmmc.xchat.utils;
 
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import icu.mmmc.xchat.R;
 import icu.xchat.core.Identity;
@@ -52,7 +52,8 @@ public final class FileUtils {
                         return;
                     }
                     File file = new File(path, fileName.getText().toString() + ".xid");
-                    try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    Uri uri = Uri.fromFile(file);
+                    try (OutputStream outputStream = activity.getContentResolver().openOutputStream(uri)) {
                         byte[] data = IdentityUtils.encodeIdentity(identity, password.getText().toString());
                         outputStream.write(data);
                         Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();

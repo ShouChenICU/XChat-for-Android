@@ -1,6 +1,9 @@
 package icu.mmmc.xchat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ChatRoomActivity.class);
             this.startActivity(intent);
         });
+        verifyStoragePermissions(this);
     }
 
     private synchronized void showRoomList() {
@@ -104,6 +109,22 @@ public class MainActivity extends AppCompatActivity {
         } else {
             topNick.setText("请加载身份");
             sideNickname.setText("请加载身份");
+        }
+    }
+
+    private final String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    public void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            int REQUEST_EXTERNAL_STORAGE = 1;
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
         }
     }
 }
