@@ -29,7 +29,7 @@ public class ServerManagerActivity extends AppCompatActivity {
     private DataBase dataBase;
     private ListView serverList;
     private ServerItemAdapter serverItemAdapter;
-    private ServerInfo currentServerInfo;
+    private ServerItemAdapter.ServerEntity currentServerEntity;
 
     private void loadViews() {
         findViewById(R.id.backBtn).setOnClickListener(e -> finish());
@@ -45,7 +45,7 @@ public class ServerManagerActivity extends AppCompatActivity {
                         try {
                             ServerInfo serverInfo = ServerInfoUtils.fromCode(serverCode.getText().toString());
                             dataBase.saveServer(serverTitle.getText().toString(), serverInfo);
-                            serverItemAdapter.addItem(new ServerItemAdapter.ServerEntity(serverTitle.getText().toString(), serverInfo));
+                            refresh();
                         } catch (Exception exception) {
                             Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -56,22 +56,23 @@ public class ServerManagerActivity extends AppCompatActivity {
         this.serverList = findViewById(R.id.server_list);
         this.serverList.setAdapter(serverItemAdapter);
         this.serverList.setOnItemClickListener((adapterView, view, i, l) -> {
-            ServerItemAdapter.ServerEntity serverEntity = (ServerItemAdapter.ServerEntity) serverItemAdapter.getItem(i);
-            this.currentServerInfo = serverEntity.serverInfo;
+            this.currentServerEntity = (ServerItemAdapter.ServerEntity) serverItemAdapter.getItem(i);
             openContextMenu(serverList);
         });
     }
 
     @SuppressLint({"Range", "Recycle"})
     private void refresh() {
+        serverItemAdapter.clear();
         Cursor cursor = dataBase.getReadableDatabase().rawQuery("SELECT * FROM t_servers", null);
         while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
             String title = cursor.getString(cursor.getColumnIndex("server_title"));
             ServerInfo serverInfo = new ServerInfo();
             serverInfo.setServerCode(cursor.getString(cursor.getColumnIndex("server_code")));
             serverInfo.setHost(cursor.getString(cursor.getColumnIndex("host")));
             serverInfo.setPort(cursor.getInt(cursor.getColumnIndex("port")));
-            ServerItemAdapter.ServerEntity serverEntity = new ServerItemAdapter.ServerEntity(title, serverInfo);
+            ServerItemAdapter.ServerEntity serverEntity = new ServerItemAdapter.ServerEntity(id, title, serverInfo);
             serverItemAdapter.addItem(serverEntity);
         }
     }
@@ -85,12 +86,12 @@ public class ServerManagerActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (Objects.equals(item.getItemId(), R.id.connect)) {
+        if (Objects.equals(item.getItemId(), R.id.connect_btn)) {
             if (XChatCore.getIdentity() == null) {
                 Toast.makeText(ServerManagerActivity.this, "请先加载身份！", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            ServerInfo info = currentServerInfo;
+            ServerInfo info = currentServerEntity.serverInfo;
             XChatCore.Servers.attemptConnectServer(info, new ProgressAdapter() {
 
                 @Override
@@ -141,19 +142,22 @@ public class ServerManagerActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(ServerManagerActivity.this, errMsg, Toast.LENGTH_SHORT).show());
                 }
             });
-        } else if (Objects.equals(item.getItemId(), R.id.details)) {
+        } else if (Objects.equals(item.getItemId(), R.id.details_btn)) {
             LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.server_item_details, null);
             TextView serverId = layout.findViewById(R.id.server_id);
-            serverId.setText("服务器识别码：" + currentServerInfo.getServerCode());
+            serverId.setText("服务器识别码：" + currentServerEntity.serverInfo.getServerCode());
             TextView serverHost = layout.findViewById(R.id.server_host);
-            serverHost.setText("服务器地址：" + currentServerInfo.getHost());
+            serverHost.setText("服务器地址：" + currentServerEntity.serverInfo.getHost());
             TextView serverPort = layout.findViewById(R.id.server_port);
-            serverPort.setText("服务器端口：" + currentServerInfo.getPort());
+            serverPort.setText("服务器端口：" + currentServerEntity.serverInfo.getPort());
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("服务器详情")
                     .setView(layout)
                     .setPositiveButton("确定", null)
                     .show();
+        } else if (Objects.equals(item.getItemId(), R.id.delete_btn)) {
+            dataBase.delServer(currentServerEntity.id);
+            refresh();
         }
         return true;
     }

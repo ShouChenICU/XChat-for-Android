@@ -40,4 +40,8 @@ public class DataBase extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO t_servers (server_title,server_code,host,port) " +
                 "VALUES(?,?,?,?)", new Object[]{title, serverInfo.getServerCode(), serverInfo.getHost(), serverInfo.getPort()});
     }
+
+    public void delServer(int id) {
+        getWritableDatabase().execSQL("DELETE FROM t_servers WHERE id =?", new Object[]{id});
+    }
 }

@@ -20,6 +20,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import icu.xchat.core.Identity;
@@ -28,6 +31,7 @@ import icu.xchat.core.constants.UserAttributes;
 import icu.xchat.core.utils.IdentityUtils;
 
 public class IdentityManagerActivity extends AppCompatActivity {
+    private static Uri identityUri;
     private TextView nickname;
     private TextView uidCode;
     private TextView menuBtn;
@@ -35,6 +39,7 @@ public class IdentityManagerActivity extends AppCompatActivity {
     private TextView birthText;
     private TextView emailText;
     private TextView phoneText;
+    private TextView timestamp;
 
     private void loadViews() {
         this.nickname = findViewById(R.id.nickname);
@@ -44,6 +49,7 @@ public class IdentityManagerActivity extends AppCompatActivity {
         this.birthText = findViewById(R.id.birth_text);
         this.emailText = findViewById(R.id.email_text);
         this.phoneText = findViewById(R.id.phone_text);
+        this.timestamp = findViewById(R.id.timestamp);
         this.uidCode.setOnLongClickListener(view -> {
             ClipboardManager manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             manager.setPrimaryClip(ClipData.newPlainText("", uidCode.getText()));
@@ -80,11 +86,22 @@ public class IdentityManagerActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(intent, 1);
         } else if (Objects.equals(item.getItemId(), R.id.logout)) {
+            if (XChatCore.getIdentity() == null) {
+                Toast.makeText(this, "未加载身份", Toast.LENGTH_SHORT).show();
+                return false;
+            }
             XChatCore.logout();
             refresh();
             Toast.makeText(this, "注销成功", Toast.LENGTH_SHORT).show();
         } else if (Objects.equals(item.getItemId(), R.id.create_identity)) {
             Intent intent = new Intent(this, CreateIdentityActivity.class);
+            startActivity(intent);
+        } else if (Objects.equals(item.getItemId(), R.id.edit_identity)) {
+            if (XChatCore.getIdentity() == null) {
+                Toast.makeText(this, "未加载身份", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            Intent intent = new Intent(this, EditIdentityActivity.class);
             startActivity(intent);
         }
         return true;
@@ -111,6 +128,8 @@ public class IdentityManagerActivity extends AppCompatActivity {
                                 Identity identity = IdentityUtils.parseIdentity(outputStream.toByteArray(), password.getText().toString());
                                 XChatCore.loadIdentity(identity);
                                 refresh();
+                                Toast.makeText(this, "加载完毕", Toast.LENGTH_SHORT).show();
+                                identityUri = uri;
                             } catch (Exception e) {
                                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -143,6 +162,7 @@ public class IdentityManagerActivity extends AppCompatActivity {
             this.birthText.setText("");
             this.emailText.setText("");
             this.phoneText.setText("");
+            this.timestamp.setText("");
             return;
         }
         this.uidCode.setText(identity.getUidCode());
@@ -151,5 +171,10 @@ public class IdentityManagerActivity extends AppCompatActivity {
         this.birthText.setText(identity.getAttribute(UserAttributes.$BIRTHDAY));
         this.emailText.setText(identity.getAttribute(UserAttributes.$EMAIL));
         this.phoneText.setText(identity.getAttribute(UserAttributes.$PHONE));
+        this.timestamp.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date(identity.getTimeStamp())));
+    }
+
+    public static Uri getIdentityUri() {
+        return identityUri;
     }
 }

@@ -30,6 +30,12 @@ public class ServerItemAdapter extends BaseAdapter {
 
     public void addItem(ServerEntity serverEntity) {
         items.add(serverEntity);
+        this.notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -83,10 +89,12 @@ public class ServerItemAdapter extends BaseAdapter {
     }
 
     public static class ServerEntity {
+        public int id;
         public String title;
         public ServerInfo serverInfo;
 
-        public ServerEntity(String title, ServerInfo serverInfo) {
+        public ServerEntity(int id, String title, ServerInfo serverInfo) {
+            this.id = id;
             this.title = title;
             this.serverInfo = serverInfo;
         }
