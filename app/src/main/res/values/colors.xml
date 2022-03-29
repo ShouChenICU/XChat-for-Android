@@ -12,6 +12,12 @@
     <color name="colorSideMenuBar">@color/aliceBlue</color>
     <color name="userInfoCard">@color/white</color>
     <color name="aliceBlue">#F0F8FF</color>
-    <color name="danger">#D67373</color>
+    <color name="danger">#DC3545</color>
     <color name="send_button">#3FB54D</color>
+    <color name="success">#198754</color>
+    <color name="warning">#FFC107</color>
+    <color name="primary">#0D6EFD</color>
+    <color name="secondary">#6C757D</color>
+    <color name="light">#F8F9FA</color>
+    <color name="dark">#212529</color>
 </resources>

@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/layout-v28/activity_main.xml" value="0.2635416666666667" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.23369565217391305" />
         <entry key="app/src/main/res/layout/activity_chat_room.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_create_identity.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_identity_manager.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_server_manager.xml" value="0.23369565217391305" />
@@ -24,7 +25,9 @@
         <entry key="app/src/main/res/layout/room_list.xml" value="0.335" />
         <entry key="app/src/main/res/layout/room_list_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/server_add_dialog.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/server_item_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/server_list_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/store_identity_dialog.xml" value="0.335" />
         <entry key="app/src/main/res/menu/identity_menu.xml" value="0.2635416666666667" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.2635416666666667" />
         <entry key="app/src/main/res/menu/server_menu.xml" value="0.2635416666666667" />

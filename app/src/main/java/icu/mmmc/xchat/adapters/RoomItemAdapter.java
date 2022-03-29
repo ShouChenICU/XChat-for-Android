@@ -1,7 +1,6 @@
 package icu.mmmc.xchat.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import icu.mmmc.xchat.ChatRoomActivity;
 import icu.mmmc.xchat.R;
 import icu.xchat.core.XChatCore;
 import icu.xchat.core.constants.RoomAttributes;
@@ -33,16 +32,6 @@ public class RoomItemAdapter extends BaseAdapter {
         this.listView = listView;
         this.mInflater = LayoutInflater.from(mContext);
         this.items = new ArrayList<>();
-        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-            ChatRoom chatRoom = items.get(i);
-            ChatRoomActivity.setChatRoom(chatRoom);
-            chatRoom.setUnprocessedMsgCount(0);
-            ItemTag itemTag = (ItemTag) view.getTag();
-            itemTag.unprocessedMsgCount.setVisibility(View.INVISIBLE);
-            notifyDataSetChanged();
-            Intent intent = new Intent(mContext, ChatRoomActivity.class);
-            mContext.startActivity(intent);
-        });
         refresh();
     }
 
@@ -50,7 +39,9 @@ public class RoomItemAdapter extends BaseAdapter {
         XChatCore.CallBack.updateRoomInfoCallBack = (roomInfo, serverCode) -> {
             ChatRoom chatRoom = XChatCore.Servers.getServer(serverCode).getChatRoom(roomInfo.getRid());
             synchronized (items) {
+                items.removeIf(room -> Objects.equals(room.getServerCode(), serverCode) && Objects.equals(room.getRid(), roomInfo.getRid()));
                 items.add(chatRoom);
+                listView.post(this::notifyDataSetChanged);
             }
         };
     }

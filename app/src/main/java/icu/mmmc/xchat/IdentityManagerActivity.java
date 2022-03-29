@@ -1,8 +1,11 @@
 package icu.mmmc.xchat;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +44,12 @@ public class IdentityManagerActivity extends AppCompatActivity {
         this.birthText = findViewById(R.id.birth_text);
         this.emailText = findViewById(R.id.email_text);
         this.phoneText = findViewById(R.id.phone_text);
+        this.uidCode.setOnLongClickListener(view -> {
+            ClipboardManager manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            manager.setPrimaryClip(ClipData.newPlainText("", uidCode.getText()));
+            Toast.makeText(this, "识别码已复制", Toast.LENGTH_SHORT).show();
+            return true;
+        });
     }
 
     @Override
@@ -61,11 +70,22 @@ public class IdentityManagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (Objects.equals(item.getItemId(), R.id.loadIdentity)) {
+        if (Objects.equals(item.getItemId(), R.id.load_identity)) {
+            if (XChatCore.getIdentity() != null) {
+                Toast.makeText(this, "请先注销当前身份", Toast.LENGTH_SHORT).show();
+                return false;
+            }
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(intent, 1);
+        } else if (Objects.equals(item.getItemId(), R.id.logout)) {
+            XChatCore.logout();
+            refresh();
+            Toast.makeText(this, "注销成功", Toast.LENGTH_SHORT).show();
+        } else if (Objects.equals(item.getItemId(), R.id.create_identity)) {
+            Intent intent = new Intent(this, CreateIdentityActivity.class);
+            startActivity(intent);
         }
         return true;
     }
@@ -76,6 +96,7 @@ public class IdentityManagerActivity extends AppCompatActivity {
             if (data != null) {
                 Uri uri = data.getData();
                 EditText password = new EditText(this);
+                password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("请输入密码")
                         .setNegativeButton("取消", (dialogInterface, i) -> Toast.makeText(IdentityManagerActivity.this, "取消加载", Toast.LENGTH_SHORT).show())
@@ -91,7 +112,7 @@ public class IdentityManagerActivity extends AppCompatActivity {
                                 XChatCore.loadIdentity(identity);
                                 refresh();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                 builder.setView(password);

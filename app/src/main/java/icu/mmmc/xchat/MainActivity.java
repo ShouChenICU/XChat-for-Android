@@ -19,6 +19,7 @@ import icu.xchat.core.Configuration;
 import icu.xchat.core.Identity;
 import icu.xchat.core.XChatCore;
 import icu.xchat.core.constants.UserAttributes;
+import icu.xchat.core.entities.ChatRoom;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -58,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         loadViews();
         showRoomList();
+        roomList.setOnItemClickListener((adapterView, view, i, l) -> {
+            ChatRoom chatRoom = (ChatRoom) roomItemAdapter.getItem(i);
+            ChatRoomActivity.setChatRoom(chatRoom);
+            chatRoom.setUnprocessedMsgCount(0);
+            roomItemAdapter.notifyDataSetChanged();
+            Intent intent = new Intent(this, ChatRoomActivity.class);
+            this.startActivity(intent);
+        });
     }
 
     private synchronized void showRoomList() {

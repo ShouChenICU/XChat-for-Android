@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="icu.mmmc.xchat">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -16,6 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.XChat">
+        <activity
+            android:name=".CreateIdentityActivity"
+            android:exported="false" />
         <activity
             android:name=".AboutActivity"
             android:exported="false" />

@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="身份管理"
-            android:textColor="@color/textBlack"
+            android:textColor="@color/dark"
             android:textSize="18sp" />
 
         <TextView
@@ -103,14 +103,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="详情"
-                    android:textColor="@color/textBlack"
-                    android:textSize="16sp" />
+                    android:textColor="@color/dark"
+                    android:textSize="18sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_margin="2dp"
-                    android:background="#CB000000"
+                    android:layout_marginVertical="4dp"
+                    android:background="@color/secondary"
                     android:translationZ="2dp" />
 
                 <LinearLayout
@@ -122,13 +122,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="性别：" />
+                        android:text="性别："
+                        android:textColor="@color/dark"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/gender_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="男" />
+                        android:text="男"
+                        android:textColor="@color/secondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -140,13 +144,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="生日：" />
+                        android:text="生日："
+                        android:textColor="@color/dark"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/birth_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2022" />
+                        android:text="2022"
+                        android:textColor="@color/secondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -158,13 +166,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="邮箱：" />
+                        android:text="邮箱："
+                        android:textColor="@color/dark"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/email_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="123@qwe.com" />
+                        android:text="123@qwe.com"
+                        android:textColor="@color/secondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -176,13 +188,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="电话：" />
+                        android:text="电话："
+                        android:textColor="@color/dark"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/phone_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="123456" />
+                        android:text="123456"
+                        android:textColor="@color/secondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

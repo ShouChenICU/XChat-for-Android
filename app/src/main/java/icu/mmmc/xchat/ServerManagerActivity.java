@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -81,6 +82,7 @@ public class ServerManagerActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (Objects.equals(item.getItemId(), R.id.connect)) {
@@ -139,6 +141,19 @@ public class ServerManagerActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(ServerManagerActivity.this, errMsg, Toast.LENGTH_SHORT).show());
                 }
             });
+        } else if (Objects.equals(item.getItemId(), R.id.details)) {
+            LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.server_item_details, null);
+            TextView serverId = layout.findViewById(R.id.server_id);
+            serverId.setText("服务器识别码：" + currentServerInfo.getServerCode());
+            TextView serverHost = layout.findViewById(R.id.server_host);
+            serverHost.setText("服务器地址：" + currentServerInfo.getHost());
+            TextView serverPort = layout.findViewById(R.id.server_port);
+            serverPort.setText("服务器端口：" + currentServerInfo.getPort());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("服务器详情")
+                    .setView(layout)
+                    .setPositiveButton("确定", null)
+                    .show();
         }
         return true;
     }
@@ -151,5 +166,6 @@ public class ServerManagerActivity extends AppCompatActivity {
         loadViews();
         registerForContextMenu(serverList);
         refresh();
+        XChatCore.CallBack.updateOnlineServerListCallback = list -> runOnUiThread(() -> serverItemAdapter.notifyDataSetChanged());
     }
 }

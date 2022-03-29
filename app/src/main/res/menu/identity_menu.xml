@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/loadIdentity"
+        android:id="@+id/create_identity"
+        android:title="创建身份" />
+    <item
+        android:id="@+id/load_identity"
         android:title="加载身份" />
     <item
-        android:id="@+id/storeIdentity"
-        android:title="保存身份" />
+        android:id="@+id/edit_identity"
+        android:title="编辑身份" />
     <item
         android:id="@+id/logout"
         android:title="注销" />

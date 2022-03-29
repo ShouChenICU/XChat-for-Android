@@ -1,6 +1,8 @@
 package icu.mmmc.xchat.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -29,7 +31,12 @@ public class DataBase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
     }
 
-    public void saveServer(String title, ServerInfo serverInfo) {
+    @SuppressLint("Recycle")
+    public void saveServer(String title, ServerInfo serverInfo) throws Exception {
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT server_title FROM t_servers WHERE server_title = ?", new String[]{title});
+        if (cursor.moveToFirst()) {
+            throw new Exception("存在同名记录");
+        }
         getWritableDatabase().execSQL("INSERT INTO t_servers (server_title,server_code,host,port) " +
                 "VALUES(?,?,?,?)", new Object[]{title, serverInfo.getServerCode(), serverInfo.getHost(), serverInfo.getPort()});
     }

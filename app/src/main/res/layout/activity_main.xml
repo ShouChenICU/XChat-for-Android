@@ -35,7 +35,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_toEndOf="@+id/topAvatar"
                 android:text="XChat"
-                android:textColor="@color/textBlack"
+                android:textColor="@color/dark"
                 android:textSize="18sp" />
         </RelativeLayout>
 

@@ -23,25 +23,38 @@ public class ChatRoomActivity extends AppCompatActivity {
     private TextView roomName;
     private ListView msgList;
     private EditText input;
+    private TextView sendBtn;
     private int dH;
 
     private void loadViews() {
         this.roomName = findViewById(R.id.roomName);
         this.msgList = findViewById(R.id.msg_list);
         this.input = findViewById(R.id.input);
-        findViewById(R.id.send_btn).setOnClickListener(e -> {
+        this.sendBtn = findViewById(R.id.send_btn);
+        sendBtn.setOnClickListener(e -> {
             if (input.getText().toString().isEmpty()) {
                 return;
             }
+            sendBtn.setEnabled(false);
+            input.setEnabled(false);
             XChatCore.pushMessage(input.getText().toString(), chatRoom.getServerCode(), chatRoom.getRid(), new ProgressAdapter() {
                 @Override
                 public void completeProgress() {
-                    runOnUiThread(() -> Toast.makeText(ChatRoomActivity.this, "发送成功", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        Toast.makeText(ChatRoomActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
+                        input.setText("");
+                        sendBtn.setEnabled(true);
+                        input.setEnabled(true);
+                    });
                 }
 
                 @Override
                 public void terminate(String errMsg) {
-                    runOnUiThread(() -> Toast.makeText(ChatRoomActivity.this, errMsg, Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        Toast.makeText(ChatRoomActivity.this, errMsg, Toast.LENGTH_SHORT).show();
+                        sendBtn.setEnabled(true);
+                        input.setEnabled(true);
+                    });
                 }
             });
         });

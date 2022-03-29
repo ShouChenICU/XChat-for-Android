@@ -10,9 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import icu.mmmc.xchat.R;
+import icu.xchat.core.XChatCore;
 import icu.xchat.core.entities.ServerInfo;
+import icu.xchat.core.net.Server;
 
 public class ServerItemAdapter extends BaseAdapter {
     private final Context mContext;
@@ -53,6 +56,7 @@ public class ServerItemAdapter extends BaseAdapter {
             layout = (RelativeLayout) mInflater.inflate(R.layout.server_list_item, null);
             itemTag = new ItemTag();
             itemTag.serverTitle = layout.findViewById(R.id.server_title);
+            itemTag.status = layout.findViewById(R.id.status);
             layout.setTag(itemTag);
         } else {
             layout = (RelativeLayout) view;
@@ -60,11 +64,21 @@ public class ServerItemAdapter extends BaseAdapter {
         }
         itemTag.serverTitle.setText(serverEntity.title);
         itemTag.serverEntity = serverEntity;
+        ServerInfo serverInfo = serverEntity.serverInfo;
+        Server server = XChatCore.Servers.getServer(serverInfo.getServerCode());
+        if (server != null && Objects.equals(server.getServerInfo().getHost(), serverInfo.getHost()) && Objects.equals(server.getServerInfo().getPort(), serverInfo.getPort())) {
+            itemTag.status.setText("在线");
+            itemTag.status.setTextColor(mContext.getResources().getColor(R.color.success, mContext.getTheme()));
+        } else {
+            itemTag.status.setText("离线");
+            itemTag.status.setTextColor(mContext.getResources().getColor(R.color.secondary, mContext.getTheme()));
+        }
         return layout;
     }
 
     private static class ItemTag {
         public TextView serverTitle;
+        public TextView status;
         public ServerEntity serverEntity;
     }
 
