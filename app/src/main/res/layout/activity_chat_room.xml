@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatRoomActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorSideMenuBar"
+        android:padding="10dp"
+        android:translationZ="12dp">
+
+        <TextView
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="返回" />
+
+        <TextView
+            android:id="@+id/roomName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="4dp"
+            android:text="房间"
+            android:textColor="@color/textBlack"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/msg_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/input_bar"
+        android:layout_below="@+id/topBar"
+        android:divider="@null"
+        android:listSelector="@color/transparent"
+        android:scrollbars="vertical" />
+
+    <RelativeLayout
+        android:id="@+id/input_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorSideMenuBar"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="6dp"
+        android:translationZ="12dp">
+
+        <EditText
+            android:id="@+id/input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/send_btn"
+            android:background="@drawable/msg_input"
+            android:maxHeight="128dp"
+            android:padding="8dp"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/send_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/input"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/send_button"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="Send" />
+    </RelativeLayout>
+</RelativeLayout>

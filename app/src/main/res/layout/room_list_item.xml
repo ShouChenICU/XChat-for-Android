@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/room_avatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/avatar" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginLeft="4dp"
+        android:layout_toEndOf="@id/room_avatar"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/room_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="room1"
+            android:textColor="@color/textBlack"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/room_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="hello" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/room_unprocessed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/badge"
+        android:paddingHorizontal="4dp"
+        android:text="123"
+        android:textSize="16sp" />
+</RelativeLayout>

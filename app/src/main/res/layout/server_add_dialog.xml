@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="服务器名称"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/server_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="服务器代码"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/server_code"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:gravity="start"
+        android:inputType="textMultiLine" />
+</LinearLayout>
