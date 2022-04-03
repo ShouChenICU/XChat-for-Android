@@ -15,7 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.XChat">
-
+        <activity
+            android:name=".MemberListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RoomDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".EditIdentityActivity"
             android:exported="false" />

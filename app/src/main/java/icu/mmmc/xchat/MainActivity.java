@@ -5,14 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
@@ -40,20 +36,21 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.topAvatar).setOnClickListener(e -> drawerLayout.openDrawer(GravityCompat.START));
         this.roomItemAdapter = new RoomItemAdapter(this, roomList);
         roomList.setAdapter(roomItemAdapter);
-        findViewById(R.id.userInfo).setOnClickListener(e -> {
+        findViewById(R.id.refresh).setOnClickListener(v -> roomItemAdapter.refresh());
+        findViewById(R.id.userInfo).setOnClickListener(v -> {
             Intent intent = new Intent(this, IdentityManagerActivity.class);
             startActivity(intent);
         });
-        findViewById(R.id.server_btn).setOnClickListener(e -> {
+        findViewById(R.id.server_btn).setOnClickListener(v -> {
             Intent intent = new Intent(this, ServerManagerActivity.class);
             startActivity(intent);
         });
-        findViewById(R.id.about_btn).setOnClickListener(e -> {
+        findViewById(R.id.about_btn).setOnClickListener(v -> {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
         });
-        findViewById(R.id.btn_room).setOnClickListener(e -> showRoomList());
-        findViewById(R.id.btn_server).setOnClickListener(e -> showServerList());
+        findViewById(R.id.btn_room).setOnClickListener(v -> showRoomList());
+        findViewById(R.id.btn_server).setOnClickListener(v -> showServerList());
     }
 
     @Override
@@ -88,18 +85,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.identity_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         Identity identity = XChatCore.getIdentity();
@@ -110,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             topNick.setText("请加载身份");
             sideNickname.setText("请加载身份");
         }
+        roomItemAdapter.notifyDataSetChanged();
     }
 
     private final String[] PERMISSIONS_STORAGE = {

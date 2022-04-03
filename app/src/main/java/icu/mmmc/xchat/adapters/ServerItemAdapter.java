@@ -72,7 +72,7 @@ public class ServerItemAdapter extends BaseAdapter {
         itemTag.serverEntity = serverEntity;
         ServerInfo serverInfo = serverEntity.serverInfo;
         Server server = XChatCore.Servers.getServer(serverInfo.getServerCode());
-        if (server != null && Objects.equals(server.getServerInfo().getHost(), serverInfo.getHost()) && Objects.equals(server.getServerInfo().getPort(), serverInfo.getPort())) {
+        if (server != null && server.isConnect() && Objects.equals((Integer) server.getServerInfo().getTag(), serverEntity.id)) {
             itemTag.status.setText("在线");
             itemTag.status.setTextColor(mContext.getResources().getColor(R.color.success, mContext.getTheme()));
         } else {

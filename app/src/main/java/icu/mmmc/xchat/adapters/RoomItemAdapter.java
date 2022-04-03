@@ -19,6 +19,7 @@ import icu.xchat.core.XChatCore;
 import icu.xchat.core.constants.RoomAttributes;
 import icu.xchat.core.entities.ChatRoom;
 import icu.xchat.core.entities.MessageInfo;
+import icu.xchat.core.net.Server;
 
 public class RoomItemAdapter extends BaseAdapter {
     private final Context mContext;
@@ -32,10 +33,6 @@ public class RoomItemAdapter extends BaseAdapter {
         this.listView = listView;
         this.mInflater = LayoutInflater.from(mContext);
         this.items = new ArrayList<>();
-        refresh();
-    }
-
-    public void refresh() {
         XChatCore.CallBack.updateRoomInfoCallBack = (roomInfo, serverCode) -> {
             ChatRoom chatRoom = XChatCore.Servers.getServer(serverCode).getChatRoom(roomInfo.getRid());
             synchronized (items) {
@@ -44,6 +41,15 @@ public class RoomItemAdapter extends BaseAdapter {
                 listView.post(this::notifyDataSetChanged);
             }
         };
+        refresh();
+    }
+
+    public void refresh() {
+        items.clear();
+        for (Server server : XChatCore.Servers.getServerList()) {
+            items.addAll(server.getChatRoomList());
+        }
+        notifyDataSetChanged();
     }
 
     @Override

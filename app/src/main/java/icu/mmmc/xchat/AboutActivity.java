@@ -11,7 +11,7 @@ public class AboutActivity extends AppCompatActivity {
     private void loadViews() {
         findViewById(R.id.backBtn).setOnClickListener(e -> finish());
         TextView version = findViewById(R.id.version);
-        version.setText("0.1 alpha");
+        version.setText("0.2 alpha");
         TextView xchatCoreVersion = findViewById(R.id.xchat_core_version);
         xchatCoreVersion.setText(GlobalVariables.VERSION_STRING);
     }

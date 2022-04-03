@@ -1,6 +1,6 @@
 package icu.mmmc.xchat.adapters;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +11,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import icu.mmmc.xchat.ChatRoomActivity;
 import icu.mmmc.xchat.R;
 import icu.xchat.core.UserInfoManager;
 import icu.xchat.core.XChatCore;
@@ -22,53 +23,31 @@ import icu.xchat.core.callbacks.adapters.ProgressAdapter;
 import icu.xchat.core.constants.UserAttributes;
 import icu.xchat.core.entities.ChatRoom;
 import icu.xchat.core.entities.MessageInfo;
+import icu.xchat.core.entities.UserInfo;
 
 public class MessageItemAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
-    private final Context mContext;
+    private final Activity activity;
     private final ListView listView;
-    private final View topSyncMsgView;
     private final ChatRoom chatRoom;
     private final List<MessageInfo> messageInfoList;
 
-    public MessageItemAdapter(Context context, ListView listView, ChatRoom chatRoom) {
-        this.mContext = context;
+    public MessageItemAdapter(Activity activity, ListView listView, ChatRoom chatRoom) {
+        this.activity = activity;
         this.listView = listView;
-        this.mInflater = LayoutInflater.from(mContext);
+        this.mInflater = LayoutInflater.from(activity);
         this.chatRoom = chatRoom;
         this.messageInfoList = chatRoom.getMessageList();
-        this.topSyncMsgView = mInflater.inflate(R.layout.message_list_item_top, null);
-        TextView textView = topSyncMsgView.findViewById(R.id.sync_msg);
-        textView.setOnClickListener(e -> {
-            long time;
-            if (messageInfoList.isEmpty()) {
-                time = System.currentTimeMillis();
-            } else {
-                time = messageInfoList.get(0).getTimeStamp();
-            }
-            XChatCore.Tasks.syncMessage(chatRoom.getServerCode(), chatRoom.getRid(), time, 10, new ProgressAdapter() {
-                @Override
-                public void completeProgress() {
-                    ((ChatRoomActivity) mContext).runOnUiThread(() -> Toast.makeText(mContext, "消息同步完成！", Toast.LENGTH_SHORT).show());
-                }
 
-                @Override
-                public void terminate(String errMsg) {
-                    ((ChatRoomActivity) mContext).runOnUiThread(() -> Toast.makeText(mContext, errMsg, Toast.LENGTH_SHORT).show());
-                }
-            });
-        });
-        chatRoom.setUpdateMessageCallBack(msg -> {
+        chatRoom.setUpdateMessageCallBack(msg -> listView.post(() -> {
             int i = listView.getLastVisiblePosition();
             if (i >= messageInfoList.size() - 2) {
-                listView.post(() -> {
-                    notifyDataSetChanged();
-                    listView.smoothScrollToPosition(messageInfoList.size() + 1);
-                });
+                notifyDataSetChanged();
+                listView.smoothScrollToPosition(messageInfoList.size() + 1);
             } else {
-                listView.post(this::notifyDataSetChanged);
+                notifyDataSetChanged();
             }
-        });
+        }));
     }
 
     @Override
@@ -91,6 +70,37 @@ public class MessageItemAdapter extends BaseAdapter {
         // TODO: 2022/3/29 待优化性能
         RelativeLayout layout;
         if (Objects.equals(i, 0)) {
+            View topSyncMsgView = mInflater.inflate(R.layout.message_list_item_top, null);
+            TextView syncBtn = topSyncMsgView.findViewById(R.id.sync_msg);
+            syncBtn.setOnClickListener(e -> {
+                syncBtn.setEnabled(false);
+                syncBtn.setTextColor(activity.getResources().getColor(R.color.secondary, activity.getTheme()));
+                long time;
+                if (messageInfoList.isEmpty()) {
+                    time = System.currentTimeMillis();
+                } else {
+                    time = messageInfoList.get(0).getTimeStamp();
+                }
+                XChatCore.Tasks.syncMessage(chatRoom.getServerCode(), chatRoom.getRid(), time, 10, new ProgressAdapter() {
+                    @Override
+                    public void completeProgress() {
+                        listView.post(() -> {
+                            Toast.makeText(activity, "消息同步完成！", Toast.LENGTH_SHORT).show();
+                            syncBtn.setEnabled(true);
+                            syncBtn.setTextColor(activity.getResources().getColor(R.color.success, activity.getTheme()));
+                        });
+                    }
+
+                    @Override
+                    public void terminate(String errMsg) {
+                        listView.post(() -> {
+                            Toast.makeText(activity, errMsg, Toast.LENGTH_SHORT).show();
+                            syncBtn.setEnabled(true);
+                            syncBtn.setTextColor(activity.getResources().getColor(R.color.success, activity.getTheme()));
+                        });
+                    }
+                });
+            });
             return topSyncMsgView;
         }
         i--;
@@ -106,10 +116,18 @@ public class MessageItemAdapter extends BaseAdapter {
         }
         itemTag.avatar = layout.findViewById(R.id.avatar);
         itemTag.nickname = layout.findViewById(R.id.nickname);
+        itemTag.time = layout.findViewById(R.id.time);
         itemTag.content = layout.findViewById(R.id.content);
         layout.setTag(itemTag);
         itemTag.content.setText(messageInfo.getContent());
-        itemTag.nickname.setText(UserInfoManager.getUserInfo(messageInfo.getSender()).getAttribute(UserAttributes.$NICK));
+        UserInfo userInfo = UserInfoManager.getUserInfo(messageInfo.getSender());
+        if (userInfo != null) {
+            String nick = userInfo.getAttribute(UserAttributes.$NICK);
+            itemTag.nickname.setText(nick == null ? messageInfo.getSender() : nick);
+        } else {
+            itemTag.nickname.setText(messageInfo.getSender());
+        }
+        itemTag.time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(messageInfo.getTimeStamp())));
         return layout;
     }
 
@@ -117,6 +135,7 @@ public class MessageItemAdapter extends BaseAdapter {
         public boolean isMe;
         public ImageView avatar;
         public TextView nickname;
+        public TextView time;
         public TextView content;
     }
 }

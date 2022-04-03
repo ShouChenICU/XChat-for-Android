@@ -32,7 +32,7 @@ public class ServerManagerActivity extends AppCompatActivity {
     private ServerItemAdapter.ServerEntity currentServerEntity;
 
     private void loadViews() {
-        findViewById(R.id.backBtn).setOnClickListener(e -> finish());
+        findViewById(R.id.back_btn).setOnClickListener(e -> finish());
         findViewById(R.id.add_btn).setOnClickListener(e -> {
             LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.server_add_dialog, null);
             EditText serverTitle = layout.findViewById(R.id.server_title);
@@ -69,6 +69,7 @@ public class ServerManagerActivity extends AppCompatActivity {
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             String title = cursor.getString(cursor.getColumnIndex("server_title"));
             ServerInfo serverInfo = new ServerInfo();
+            serverInfo.setTag(id);
             serverInfo.setServerCode(cursor.getString(cursor.getColumnIndex("server_code")));
             serverInfo.setHost(cursor.getString(cursor.getColumnIndex("host")));
             serverInfo.setPort(cursor.getInt(cursor.getColumnIndex("port")));
@@ -155,7 +156,24 @@ public class ServerManagerActivity extends AppCompatActivity {
                     .setView(layout)
                     .setPositiveButton("确定", null)
                     .show();
+        } else if (Objects.equals(item.getItemId(), R.id.disconnect_btn)) {
+            String code = currentServerEntity.serverInfo.getServerCode();
+            XChatCore.Servers.disconnectServer(code, new ProgressAdapter() {
+                @Override
+                public void completeProgress() {
+                    runOnUiThread(() -> Toast.makeText(ServerManagerActivity.this, "complete", Toast.LENGTH_SHORT).show());
+                }
+
+                @Override
+                public void terminate(String errMsg) {
+                    runOnUiThread(() -> Toast.makeText(ServerManagerActivity.this, errMsg, Toast.LENGTH_SHORT).show());
+                }
+            });
         } else if (Objects.equals(item.getItemId(), R.id.delete_btn)) {
+            if (Objects.equals(currentServerEntity.id, (Integer) XChatCore.Servers.getServer(currentServerEntity.serverInfo.getServerCode()).getServerInfo().getTag())) {
+                Toast.makeText(this, "请先断开连接", Toast.LENGTH_SHORT).show();
+                return true;
+            }
             dataBase.delServer(currentServerEntity.id);
             refresh();
         }
@@ -170,6 +188,12 @@ public class ServerManagerActivity extends AppCompatActivity {
         loadViews();
         registerForContextMenu(serverList);
         refresh();
-        XChatCore.CallBack.updateOnlineServerListCallback = list -> runOnUiThread(() -> serverItemAdapter.notifyDataSetChanged());
+        XChatCore.CallBack.updateServerStatusCallback = server -> runOnUiThread(() -> serverItemAdapter.notifyDataSetChanged());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        XChatCore.CallBack.updateServerStatusCallback = null;
     }
 }

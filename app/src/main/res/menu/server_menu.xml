@@ -9,6 +9,9 @@
         android:title="详情" />
 
     <item
+        android:id="@+id/disconnect_btn"
+        android:title="断开连接" />
+    <item
         android:id="@+id/delete_btn"
         android:title="删除" />
 </menu>

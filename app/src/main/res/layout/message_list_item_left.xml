@@ -18,7 +18,21 @@
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/avatar"
         android:text="nickname"
+        android:textColor="@color/dark"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/nickname"
+        android:layout_alignBottom="@id/nickname"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@id/nickname"
+        android:gravity="center"
+        android:text="2022-4-3 15:29:46"
+        android:textColor="@color/secondary"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/content"
@@ -26,7 +40,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/nickname"
         android:layout_alignStart="@+id/nickname"
+        android:layout_margin="4dp"
+        android:background="@drawable/radius_16dp"
+        android:padding="8dp"
         android:text="hello"
         android:textColor="@color/textBlack"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:translationZ="2dp" />
 </RelativeLayout>

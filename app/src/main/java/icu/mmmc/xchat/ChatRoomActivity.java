@@ -1,5 +1,6 @@
 package icu.mmmc.xchat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -36,7 +37,6 @@ public class ChatRoomActivity extends AppCompatActivity {
                 return;
             }
             sendBtn.setEnabled(false);
-            input.setEnabled(false);
             XChatCore.pushMessage(input.getText().toString(), chatRoom.getServerCode(), chatRoom.getRid(), new ProgressAdapter() {
                 @Override
                 public void completeProgress() {
@@ -44,7 +44,6 @@ public class ChatRoomActivity extends AppCompatActivity {
                         Toast.makeText(ChatRoomActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
                         input.setText("");
                         sendBtn.setEnabled(true);
-                        input.setEnabled(true);
                     });
                 }
 
@@ -53,15 +52,23 @@ public class ChatRoomActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Toast.makeText(ChatRoomActivity.this, errMsg, Toast.LENGTH_SHORT).show();
                         sendBtn.setEnabled(true);
-                        input.setEnabled(true);
                     });
                 }
             });
         });
         findViewById(R.id.backBtn).setOnClickListener(e -> finish());
+        findViewById(R.id.details_btn).setOnClickListener(v -> {
+            RoomDetailsActivity.setChatRoom(chatRoom);
+            Intent intent = new Intent(this, RoomDetailsActivity.class);
+            startActivity(intent);
+        });
         messageItemAdapter = new MessageItemAdapter(this, msgList, chatRoom);
         msgList.setAdapter(messageItemAdapter);
         msgList.setSelection(messageItemAdapter.getCount());
+        findViewById(R.id.clear).setOnClickListener(v -> {
+            chatRoom.clearMessage();
+            messageItemAdapter.notifyDataSetChanged();
+        });
         View rootView = findViewById(R.id.root_view);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             int dh = rootView.getRootView().getHeight() - rootView.getHeight();

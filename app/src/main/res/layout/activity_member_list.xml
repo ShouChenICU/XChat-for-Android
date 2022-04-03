@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ServerManagerActivity">
+    tools:context=".MemberListActivity">
 
     <RelativeLayout
         android:id="@+id/top_bar"
@@ -27,21 +27,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="服务器管理"
+            android:text="成员列表"
             android:textColor="@color/textBlack"
             android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/add_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="添加" />
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/server_list"
+        android:id="@+id/member_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
