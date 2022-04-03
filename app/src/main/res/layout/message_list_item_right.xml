@@ -19,6 +19,7 @@
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@+id/avatar"
         android:text="nickname"
+        android:textColor="@color/dark"
         android:textSize="16sp" />
 
     <TextView
