@@ -23,6 +23,8 @@ import icu.mmmc.xchat.utils.DataBase;
 import icu.xchat.core.XChatCore;
 import icu.xchat.core.callbacks.adapters.ProgressAdapter;
 import icu.xchat.core.entities.ServerInfo;
+import icu.xchat.core.net.Server;
+import icu.xchat.core.net.ServerManager;
 import icu.xchat.core.utils.ServerInfoUtils;
 
 public class ServerManagerActivity extends AppCompatActivity {
@@ -158,10 +160,18 @@ public class ServerManagerActivity extends AppCompatActivity {
                     .show();
         } else if (Objects.equals(item.getItemId(), R.id.disconnect_btn)) {
             String code = currentServerEntity.serverInfo.getServerCode();
+            Server server = XChatCore.Servers.getServer(code);
+            if (server == null) {
+                return true;
+            }
+            ServerInfo serverInfo = server.getServerInfo();
+            if (!Objects.equals((Integer) serverInfo.getTag(), currentServerEntity.id)) {
+                return true;
+            }
             XChatCore.Servers.disconnectServer(code, new ProgressAdapter() {
                 @Override
                 public void completeProgress() {
-                    runOnUiThread(() -> Toast.makeText(ServerManagerActivity.this, "complete", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(ServerManagerActivity.this, "completed", Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -170,9 +180,12 @@ public class ServerManagerActivity extends AppCompatActivity {
                 }
             });
         } else if (Objects.equals(item.getItemId(), R.id.delete_btn)) {
-            if (Objects.equals(currentServerEntity.id, (Integer) XChatCore.Servers.getServer(currentServerEntity.serverInfo.getServerCode()).getServerInfo().getTag())) {
-                Toast.makeText(this, "请先断开连接", Toast.LENGTH_SHORT).show();
-                return true;
+            Server server = XChatCore.Servers.getServer(currentServerEntity.serverInfo.getServerCode());
+            if (server != null) {
+                if (Objects.equals(currentServerEntity.id, (Integer) server.getServerInfo().getTag())) {
+                    Toast.makeText(this, "请先断开连接", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
             }
             dataBase.delServer(currentServerEntity.id);
             refresh();

@@ -42,6 +42,6 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     public void delServer(int id) {
-        getWritableDatabase().execSQL("DELETE FROM t_servers WHERE id =?", new Object[]{id});
+        getWritableDatabase().execSQL("DELETE FROM t_servers WHERE id = ?", new Object[]{id});
     }
 }
